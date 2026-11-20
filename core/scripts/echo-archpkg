@@ -10,8 +10,9 @@ OPTION=" --no-check-certificate"
 OPTION=" -q --no-check-certificate" 
 if [ ! -e $HOME/archpkg/$PKG ]
 then
+echo wget $OPTION "$URL1" -O $HOME/archpkg/$PKG 
 wget $OPTION "$URL1" -O $HOME/archpkg/$PKG 
-grep 'You need to sign in or sign up before ' $HOME/archpkg/$PKG >/dev/null && wget $OPTION "$URL3" -O $HOME/archpkg/$PKG 
+grep 'DOCTYPE html' $HOME/archpkg/$PKG >/dev/null && wget $OPTION "$URL3" -O $HOME/archpkg/$PKG 
 [ ! -e $HOME/archpkg/$PKG ] && exit 1
 fi
 
