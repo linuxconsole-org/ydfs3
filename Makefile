@@ -40,7 +40,7 @@ endif
 
 ISTTY = $(shell tty -s || echo NOTTY)
 
-DOCKERIMAGE64 = $(shell ${DOCKER_CLI} image ls | grep ydfs64-${YDFS} | cut -d' ' -f1)
+DOCKERIMAGE64 = $(shell ${DOCKER_CLI} image ls | grep ydfs3-userid | cut -d' ' -f1)
 #DOCKERIMAGE64="yledoare/ydfs-3.0"
 
 ifeq ($(ISTTY),NOTTY)
@@ -105,7 +105,7 @@ prepare:
 	@chmod 777 ${HOME}/ydfs3/ydfs
 	@chmod 777 ${HOME}/ydfs3/multilib
 	@chmod 777 ${HOME}/ydfs3/archpkg
-	@test -f ${HOME}/ydfs-dbuild/archpkg/tcl || cp archpkg/* ${HOME}/ydfs3/archpkg
+	#@test -f ${HOME}/ydfs-dbuild/archpkg/tcl || cp archpkg/* ${HOME}/ydfs3/archpkg
 	@chmod 777 ${HOME}/ydfs3/iso
 	@chmod 777 ${HOME}/ydfs3/${ARCH}
 	@echo done 
@@ -114,65 +114,65 @@ force-docker-image-64: core/Dockerfile
 	cp core/Dockerfile core/Dockerfile-with-user
 	$(shell(echo RUN useradd $(shell whoami) --create-home >> core/Dockerfile-with-user)
 	echo USER $(shell whoami) >> core/Dockerfile-with-user
-	cd core && ${DOCKER_BUILD_CLI} ${DOCKER_BUILD_CLI_OPTION} build --platform=linux/amd64 -f Dockerfile-with-user -t ydfs64-${YDFS} .
+	cd core && ${DOCKER_BUILD_CLI} ${DOCKER_BUILD_CLI_OPTION} build --platform=linux/amd64 -f Dockerfile-with-user -t ydfs3-userid .
 
 docker-image-64: core/Dockerfile
-ifneq ($(DOCKERIMAGE64),ydfs64-${YDFS})
+ifneq ($(DOCKERIMAGE64),ydfs3-userid)
 	cp core/Dockerfile core/Dockerfile-with-user
 	echo "RUN install -d /ydfs${YDFS}" >> core/Dockerfile-with-user 
 	echo "RUN useradd linuxconsole3 --home-dir  ${HOME_DOCKER}  --create-home " >> core/Dockerfile-with-user
 	echo "USER linuxconsole3" >> core/Dockerfile-with-user
-	cd core && ${DOCKER_BUILD_CLI} ${DOCKER_BUILD_CLI_OPTION} build --platform=linux/amd64 -f Dockerfile-with-user -t ydfs64-${YDFS} .
+	cd core && ${DOCKER_BUILD_CLI} ${DOCKER_BUILD_CLI_OPTION} build --platform=linux/amd64 -f Dockerfile-with-user -t ydfs3-userid .
 endif
 
 force-iso:
 	@touch core/packages/list-x86_64
 
 verbose:
-	${DOCKER} -e DIBAB_VERBOSE_BUILD=YES ydfs64-${YDFS} /bin/sh -c 'cd core; make iso'
+	${DOCKER} -e DIBAB_VERBOSE_BUILD=YES ydfs3-userid /bin/sh -c 'cd core; make iso'
 
 cleanmultilib:
-	${DOCKER} ydfs64-${YDFS} /bin/sh -c 'cd core; make cleanmultilib'
+	${DOCKER} ydfs3-userid /bin/sh -c 'cd core; make cleanmultilib'
 multilib:
-	${DOCKER} ydfs64-${YDFS} /bin/sh -c 'cd core; make multilib'
+	${DOCKER} ydfs3-userid /bin/sh -c 'cd core; make multilib'
 
 buildme:
-	${DOCKER} -e BUILDME=OK ydfs64-${YDFS} /bin/sh -c 'cd core; make iso'
+	${DOCKER} -e BUILDME=OK ydfs3-userid /bin/sh -c 'cd core; make iso'
 test2:
 	cd core && make test2
 test:
 	cd core && make test
 xbmc:
-	${DOCKER} -e DIBAB_VERBOSE_BUILD=YES ydfs64-${YDFS} /bin/sh -c 'cd core; make xbmc'
+	${DOCKER} -e DIBAB_VERBOSE_BUILD=YES ydfs3-userid /bin/sh -c 'cd core; make xbmc'
 
 live-test:
-	${DOCKER} -e BUILDME=OK ydfs64-${YDFS} /bin/sh -c 'cd core; make live-test'
+	${DOCKER} -e BUILDME=OK ydfs3-userid /bin/sh -c 'cd core; make live-test'
 
 dist-opkg: 
-	${DOCKER} ydfs64-${YDFS} /bin/sh -c 'cd core; make dist'
+	${DOCKER} ydfs3-userid /bin/sh -c 'cd core; make dist'
 
 dist-fast-kernel: fast-kernel
 	scp ${HOME}/iso/kernel-modules-${YDFS}-${ARCH}.tar.gz jukebox.linuxconsole.org@jukebox.linuxconsole.org:/home/jukebox.linuxconsole.org/www/fast/kernel-modules-${YDFS}-${ARCH}.tar.gz
 	scp ${HOME}/iso/kernel-${YDFS}-${ARCH}.tar.gz jukebox.linuxconsole.org@jukebox.linuxconsole.org:/home/jukebox.linuxconsole.org/www/fast/kernel-${YDFS}-${ARCH}.tar.gz
 
 updates:
-	${DOCKER} ydfs64-${YDFS} /bin/sh -c 'cd core; make updates'
+	${DOCKER} ydfs3-userid /bin/sh -c 'cd core; make updates'
 
 uninstall:
-	${DOCKER} ydfs64-${YDFS} /bin/sh -c 'cd core; scripts/uninstall-package giflib-5.2.2'
+	${DOCKER} ydfs3-userid /bin/sh -c 'cd core; scripts/uninstall-package giflib-5.2.2'
 
 bash: prepare
-	${DOCKER} ydfs64-${YDFS} bash
+	${DOCKER} ydfs3-userid bash
 
 root: prepare
-	${DOCKER} -u root ydfs64-${YDFS} bash
+	${DOCKER} -u root ydfs3-userid bash
 
 
 fast-kernel64: prepare
-	${DOCKER} -e BUILDYDFS=fast_kernel ydfs64-${YDFS} /bin/sh -c 'cd core; make linux'
+	${DOCKER} -e BUILDYDFS=fast_kernel ydfs3-userid /bin/sh -c 'cd core; make linux'
 
 fast-64: prepare
-	${DOCKER} -e BUILDYDFS=fast ydfs64-${YDFS} /bin/sh -c 'cd core; make iso'
+	${DOCKER} -e BUILDYDFS=fast ydfs3-userid /bin/sh -c 'cd core; make iso'
 
 
 core/packages/list-x86_64: core/packages/list-misclibs-x86_64 core/packages/list-guilibs-x86_64 core/packages/list-xorg2-x86_64 core/packages/list-core-x86_64 core/packages/list-perl-x86_64 core/packages/list-xorg-x86_64 core/packages/list-mate-x86_64 core/packages/list-wine-x86_64 core/packages/list-libreoffice-x86_64 core/packages/list-kde-x86_64 core/packages/list-misc-x86_64
@@ -191,10 +191,10 @@ core/packages/list-x86_64: core/packages/list-misclibs-x86_64 core/packages/list
 	cat core/packages/list-end-x86_64 >> core/packages/list-x86_64
 initramfs:
 	@echo "Run docker iso "
-	${DOCKER} ydfs64-${YDFS} /bin/sh -c 'cd core; make initramfs'
+	${DOCKER} ydfs3-userid /bin/sh -c 'cd core; make initramfs'
 
 verbose-iso:
 	@echo "Run docker iso "
-	${DOCKER} -e DIBAB_VERBOSE_BUILD=YES ydfs64-${YDFS} /bin/sh -c 'cd core; make iso'
+	${DOCKER} -e DIBAB_VERBOSE_BUILD=YES ydfs3-userid /bin/sh -c 'cd core; make iso'
 touch:
-	${DOCKER} -e DIBAB_VERBOSE_BUILD=YES ydfs64-${YDFS} /bin/sh -c 'cd core; make touch'
+	${DOCKER} -e DIBAB_VERBOSE_BUILD=YES ydfs3-userid /bin/sh -c 'cd core; make touch'

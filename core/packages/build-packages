@@ -316,11 +316,39 @@ fi
     then
 	git clone --recurse-submodules https://github.com/Unvanquished/daemonmap.git
     else
+	    echo "$ARCHIVE" | grep '::' >/dev/null && ARCHIVE=`echo $ARCHIVE | cut -d':' -f3,4` && SOURCE_DIR=$(echo $ARCHIVE | cut -d':' -f1)
 	    echo "Cloning $ARCHIVE (quiet)"
-        [ ! -e $SOURCE_DIR ] && git clone -q `echo $ARCHIVE |cut -d'#' -f1`
+        TAG=`echo $ARCHIVE | grep '#tag' | cut -d'=' -f2`
+        COMMIT=`echo $ARCHIVE | grep '#commit' | cut -d'=' -f2`
+
+        if [ "$TAG" != "" ] && [ ! -e $SOURCE_DIR ] 
+        then
+	  echo "Tag is $TAG"
+	  echo git clone -q --branch=$TAG --depth=1 -q `echo $ARCHIVE |cut -d'#' -f1` $SOURCE_DIR
+	  git clone -q --branch=$TAG --depth=1 -q `echo $ARCHIVE |cut -d'#' -f1` $SOURCE_DIR || exit 10
+	  # git show
+        fi
+
+        if [ ! -e $SOURCE_DIR ]
+	then
+	  git clone -q --depth=1 -q `echo $ARCHIVE |cut -d'#' -f1` || exit 11
+        fi
+
+	if [ "$COMMIT" != "" ] 
+	then
+          cd $SOURCE_DIR 
+	  echo "At commit $COMMIT" 
+	  echo "Fetch $COMMIT" 
+	  pwd
+	  git fetch -q --depth=1 origin $COMMIT || exit 12
+	  echo "Checkout $COMMIT" 
+	  git checkout $COMMIT || exit 13
+	  echo "Done $COMMIT" 
+	  cd ..
+	fi
     fi
     # [ ! -e $SOURCE_DIR ] &&  [ "$NOTEXIT" = "OK" ] && echo "Clone faild with $0, but we continue " && continue
-    cd $SOURCE_DIR
+    cd $SOURCE_DIR 
     TAG=`echo $ARCHIVE | grep '#tag' | cut -d'=' -f2`
     COMMIT=`echo $ARCHIVE | grep '#commit' | cut -d'=' -f2`
     if [ "$TAG" != "" ]

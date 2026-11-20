@@ -512,7 +512,7 @@ echo $ARCHIVE | grep sqlite-src &&  LC_CONFIGURE_OPTS="	--disable-static \
 	echo $ARCHIVE | grep audacity-3 && LC_CONFIGURE_OPTS=" -Daudacity_conan_enabled=OFF -Daudacity_lib_preference=system         -Daudacity_obey_system_dependencies=On -Daudacity_use_portsmf=local -Daudacity_use_sbsms=local -Daudacity_use_soundtouch=local "
 	echo $ARCHIVE | grep audacity-3 && [ "$ARCH" = "x86" ] && LC_CONFIGURE_OPTS="-DLIB_m=/usr/lib/i386-linux-gnu/libm.so -DLIB_dl=/usr/lib/i386-linux-gnu/libdl.so $LC_CONFIGURE_OPTS "
 	echo $ARCHIVE | grep gst-ffmpeg && LC_CONFIGURE_OPTS="--with-system-ffmpeg"
-	echo $ARCHIVE | grep tcl8 && LC_CONFIGURE_OPTS="--enable-shared --enable-threads --enable-dll-unloading --disable-rpath"
+	echo $ARCHIVE | grep tcl9 && LC_CONFIGURE_OPTS="--enable-threads --enable-64bit "
 	echo $ARCHIVE | grep tuxracer && LC_CONFIGURE_OPTS="--with-tcl=$DIBAB_PREFIX/$ARCH/lib"
 	echo $ARCHIVE | grep ntfs-3g && LC_CONFIGURE_OPTS="--with-fuse=external --enable-really-static --sbindir=$DIBAB_PREFIX/$MODULE/sbin --exec-prefix=$DIBAB_PREFIX/$MODULE"
 	echo $ARCHIVE | grep bluez-5 && LC_CONFIGURE_OPTS="--enable-library --with-dbusconfdir=$DIBAB_PREFIX/$ARCH/share \

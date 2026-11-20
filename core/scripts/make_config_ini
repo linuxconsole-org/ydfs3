@@ -73,8 +73,8 @@ fi
 
 def_arch=${ARCH}
 
-echo -n  "Arch ? (x86,x86_64,i586,mini2440,raspi,raspi-qemu) : $def_arch : "
-read arch
+#echo -n  "Arch ? (x86,x86_64,i586,mini2440,raspi,raspi-qemu) : $def_arch : "
+#read arch
 [ "$arch" = "" ] && arch=$def_arch
 # modification de $CONFIGINI selon le type de processeur saisi
 if [ "$arch" = "mini2440" ]
