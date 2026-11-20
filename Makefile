@@ -65,6 +65,11 @@ DOCKER=${DOCKER_CLI} run ${OPTION} --rm --security-opt seccomp=unconfined \
 
 all: Dockerfile-user iso
 
+reset:
+	rm ${HOME}/ydfs3/archpkg/* 
+	rm archpkg/* 
+	rm ${HOME}/archpkg/* 
+
 Dockerfile-user:
 	echo "FROM yledoare/ydfs-3.0" > Dockerfile-user
 	echo "USER root" >> Dockerfile-user
@@ -77,9 +82,9 @@ Dockerfile-user:
 
 #iso: docker-image-64 prepare core/packages/list-x86_64
 iso: prepare core/packages/list-x86_64
+	${DOCKER} ydfs3-userid /bin/sh -c 'cd core; make iso'
 	# ${DOCKER} yledoare/ydfs-${YDFS} /bin/sh -c 'cd core; make iso'
 	# ${DOCKER} ydfs3-userid /bin/sh -c 'cd core; make iso'
-	${DOCKER} ydfs3-userid /bin/sh -c 'cd core; make iso'
 	# ${DOCKER} ydfs3-userid /bin/sh 
 
 clean:
